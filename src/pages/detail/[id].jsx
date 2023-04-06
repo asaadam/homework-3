@@ -5,7 +5,6 @@ import {
   Heading,
   HStack,
   Image,
-  Link,
   Popover,
   PopoverArrow,
   PopoverBody,
@@ -20,6 +19,7 @@ import { useEffect, useState } from "react";
 import { deleteBook, getBookDetailById } from "../modules/fetch";
 import Wrapper from "@/components/Wrapper";
 import { useRouter } from "next/router";
+import Link from "next/link";
 
 export default function BookDetails() {
   const [book, setBook] = useState(null);
@@ -94,7 +94,7 @@ export default function BookDetails() {
               </Button>
             </PopoverContent>
           </Popover>
-          <Link to={`/editbook/${router.query.id}`}>
+          <Link href={`/editbook/${router.query.id}`}>
             <Button>Edit</Button>
           </Link>
         </HStack>

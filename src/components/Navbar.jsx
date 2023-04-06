@@ -5,7 +5,6 @@ import {
   FormLabel,
   HStack,
   Input,
-  Link,
   Modal,
   ModalBody,
   ModalCloseButton,
@@ -21,6 +20,7 @@ import {
 import { useEffect, useState } from "react";
 import { loginUser } from "../modules/fetch";
 import { useRouter } from "next/router";
+import Link from "next/link";
 
 const Navbar = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -46,7 +46,7 @@ const Navbar = () => {
       bg="teal.500"
       color="white"
     >
-      <Link to="/">
+      <Link href="/">
         <Flex align="center" mr={5} cursor="pointer">
           <Text fontSize="xl" fontWeight="bold">
             My Website
@@ -55,7 +55,7 @@ const Navbar = () => {
       </Link>
       <HStack>
         {isLogin && (
-          <Link to="/newbook">
+          <Link href="/newbook">
             <Button colorScheme="blackAlpha">Create New Book</Button>
           </Link>
         )}
@@ -129,7 +129,7 @@ const Navbar = () => {
               <Button type="submit" form="login-form" colorScheme="blue" mr={3}>
                 Login
               </Button>
-              <Link to="/register" onClick={onClose}>
+              <Link href="/register" onClick={onClose}>
                 <Button variant="ghost">
                   Doesn`&apos;`t Have Account? Click here
                 </Button>
