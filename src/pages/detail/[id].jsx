@@ -5,6 +5,7 @@ import {
   Heading,
   HStack,
   Image,
+  Link,
   Popover,
   PopoverArrow,
   PopoverBody,
@@ -16,20 +17,19 @@ import {
   Text,
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
-import { Link, useNavigate, useParams } from "react-router-dom";
 import { deleteBook, getBookDetailById } from "../modules/fetch";
 import Wrapper from "@/components/Wrapper";
+import { useRouter } from "next/router";
 
 export default function BookDetails() {
   const [book, setBook] = useState(null);
   const [isLoading, setLoading] = useState(true);
-  const { id } = useParams();
-  const navigate = useNavigate();
+  const router = useRouter();
 
   useEffect(() => {
     const fetchBook = async () => {
       try {
-        const response = await getBookDetailById(id);
+        const response = await getBookDetailById(router.query.id);
         setBook(response.book);
         setLoading(false);
       } catch (e) {
@@ -37,12 +37,12 @@ export default function BookDetails() {
       }
     };
     fetchBook();
-  }, [id]);
+  }, [router.query.id]);
 
   const handleDeleteBook = async () => {
     try {
-      await deleteBook(id);
-      navigate("/");
+      await deleteBook(router.query.id);
+      router.push("/");
     } catch (e) {
       console.log(e);
     }
@@ -94,7 +94,7 @@ export default function BookDetails() {
               </Button>
             </PopoverContent>
           </Popover>
-          <Link to={`/editbook/${id}`}>
+          <Link to={`/editbook/${router.query.id}`}>
             <Button>Edit</Button>
           </Link>
         </HStack>

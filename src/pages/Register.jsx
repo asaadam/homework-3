@@ -9,15 +9,15 @@ import {
   useToast,
 } from "@chakra-ui/react";
 import { registerUser } from "../modules/fetch";
-import { useNavigate } from "react-router-dom";
 import Wrapper from "@/components/Wrapper";
+import { useRouter } from "next/router";
 
 const Register = () => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState(null);
-  const navigate = useNavigate();
   const toast = useToast();
+  const router = useRouter();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -33,7 +33,7 @@ const Register = () => {
         duration: 3000,
         isClosable: true,
       });
-      navigate("/");
+      router.push("/");
     } catch (e) {
       const error = new Error(e);
       toast({

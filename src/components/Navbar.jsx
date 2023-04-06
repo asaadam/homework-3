@@ -5,6 +5,7 @@ import {
   FormLabel,
   HStack,
   Input,
+  Link,
   Modal,
   ModalBody,
   ModalCloseButton,
@@ -18,14 +19,14 @@ import {
   VStack,
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
 import { loginUser } from "../modules/fetch";
+import { useRouter } from "next/router";
 
 const Navbar = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [isLogin, setIsLogin] = useState(false);
   const toast = useToast();
-  const navigate = useNavigate();
+  const router = useRouter();
 
   useEffect(() => {
     const token = window.localStorage.getItem("token");
@@ -68,7 +69,7 @@ const Navbar = () => {
             onClick={() => {
               window.localStorage.removeItem("token");
               setIsLogin(false);
-              navigate("/")
+              router.push("/");
             }}
           >
             Logout
@@ -87,7 +88,7 @@ const Navbar = () => {
                 e.target.password.value
               );
               window.localStorage.setItem("token", token.token);
-              navigate("/");
+              router.push("/");
               onClose();
             } catch (err) {
               toast({
@@ -130,7 +131,7 @@ const Navbar = () => {
               </Button>
               <Link to="/register" onClick={onClose}>
                 <Button variant="ghost">
-                  Doesn't Have Account? Click here
+                  Doesn`&apos;`t Have Account? Click here
                 </Button>
               </Link>
             </ModalFooter>
