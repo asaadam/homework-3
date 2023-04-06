@@ -28,12 +28,12 @@ const Navbar = () => {
   const toast = useToast();
   const router = useRouter();
 
-  useEffect(() => {
-    const token = window.localStorage.getItem("token");
-    if (token) {
-      setIsLogin(true);
-    }
-  }, [window.localStorage.getItem("token")]);
+  // useEffect(() => {
+  //   const token = window.localStorage.getItem("token");
+  //   if (token) {
+  //     setIsLogin(true);
+  //   }
+  // }, [window.localStorage.getItem("token")]);
 
   return (
     <Flex
@@ -67,7 +67,7 @@ const Navbar = () => {
           <Button
             colorScheme="blue"
             onClick={() => {
-              window.localStorage.removeItem("token");
+              // window.localStorage.removeItem("token");
               setIsLogin(false);
               router.push("/");
             }}
@@ -87,7 +87,7 @@ const Navbar = () => {
                 e.target.email.value,
                 e.target.password.value
               );
-              window.localStorage.setItem("token", token.token);
+              // window.localStorage.setItem("token", token.token);
               router.push("/");
               onClose();
             } catch (err) {
