@@ -131,7 +131,7 @@ const Navbar = () => {
               </Button>
               <Link href="/register" onClick={onClose}>
                 <Button variant="ghost">
-                  Doesn`&apos;`t Have Account? Click here
+                  Doesn&apos;t Have Account? Click here
                 </Button>
               </Link>
             </ModalFooter>

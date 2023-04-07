@@ -16,10 +16,10 @@ import {
   Text,
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
-import { deleteBook, getBookDetailById } from "../modules/fetch";
 import Wrapper from "@/components/Wrapper";
 import { useRouter } from "next/router";
 import Link from "next/link";
+import { deleteBook, getBookDetailById } from "@/modules/fetch";
 
 export default function BookDetails() {
   const [book, setBook] = useState(null);
@@ -56,7 +56,7 @@ export default function BookDetails() {
         <Flex my="6">
           <Box w="300px">
             <Image
-              src={`http://localhost:8000/${book.image}`}
+              src={`${book.image}`}
               alt={book.title}
             />
           </Box>
@@ -76,7 +76,6 @@ export default function BookDetails() {
           </Box>
         </Flex>
       )}
-      {localStorage.getItem("token") && (
         <HStack>
           <Popover>
             <PopoverTrigger>
@@ -98,7 +97,6 @@ export default function BookDetails() {
             <Button>Edit</Button>
           </Link>
         </HStack>
-      )}
     </Wrapper>
   );
 }

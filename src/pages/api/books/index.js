@@ -37,7 +37,7 @@ export default async function handler(req, res) {
                 publisher,
                 year: parseInt(year),
                 pages: parseInt(pages),
-                image: req.file.path,
+                image: req.file.path.split("public")[1],
               },
             });
             res.json({ book });
