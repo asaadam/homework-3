@@ -1,3 +1,4 @@
+import { useAuth } from "@/modules/context/authContext";
 import {
   Button,
   Flex,
@@ -17,23 +18,14 @@ import {
   useToast,
   VStack,
 } from "@chakra-ui/react";
-import { useEffect, useState } from "react";
-import { loginUser } from "../modules/fetch";
-import { useRouter } from "next/router";
+import Cookies from "js-cookie";
 import Link from "next/link";
+import { loginUser } from "../modules/fetch";
 
 const Navbar = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const [isLogin, setIsLogin] = useState(false);
   const toast = useToast();
-  const router = useRouter();
-
-  // useEffect(() => {
-  //   const token = window.localStorage.getItem("token");
-  //   if (token) {
-  //     setIsLogin(true);
-  //   }
-  // }, [window.localStorage.getItem("token")]);
+  const { isLoggedIn, setIsLoggedIn } = useAuth();
 
   return (
     <Flex
@@ -54,12 +46,12 @@ const Navbar = () => {
         </Flex>
       </Link>
       <HStack>
-        {isLogin && (
+        {isLoggedIn && (
           <Link href="/newbook">
             <Button colorScheme="blackAlpha">Create New Book</Button>
           </Link>
         )}
-        {!isLogin ? (
+        {!isLoggedIn ? (
           <Button onClick={onOpen} colorScheme="blue">
             Login
           </Button>
@@ -67,9 +59,8 @@ const Navbar = () => {
           <Button
             colorScheme="blue"
             onClick={() => {
-              // window.localStorage.removeItem("token");
-              setIsLogin(false);
-              router.push("/");
+              Cookies.remove("isLoggedIn");
+              setIsLoggedIn(false);
             }}
           >
             Logout
@@ -83,12 +74,9 @@ const Navbar = () => {
           onSubmit={async (e) => {
             e.preventDefault();
             try {
-              const token = await loginUser(
-                e.target.email.value,
-                e.target.password.value
-              );
-              // window.localStorage.setItem("token", token.token);
-              router.push("/");
+              await loginUser(e.target.email.value, e.target.password.value);
+              Cookies.set("isLoggedIn", true);
+              setIsLoggedIn(true);
               onClose();
             } catch (err) {
               toast({

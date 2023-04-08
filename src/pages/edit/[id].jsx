@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
-import BookForm from "../components/BookForm";
-import { getBookDetailById } from "../modules/fetch";
 import Wrapper from "@/components/Wrapper";
 import { useRouter } from "next/router";
+import BookForm from "@/components/BookForm";
+import { getBookDetailById } from "@/modules/fetch";
 
 export default function EditBookPage() {
   const [book, setBook] = useState(null);

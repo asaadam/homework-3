@@ -1,3 +1,4 @@
+import { createBook, editBook } from "@/modules/fetch";
 import {
   Button,
   FormControl,
@@ -8,7 +9,6 @@ import {
   VStack,
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
-import { createBook, editBook } from "../modules/fetch";
 
 export default function BookForm({ bookData }) {
   const toast = useToast();
@@ -78,7 +78,7 @@ export default function BookForm({ bookData }) {
 
   useEffect(() => {
     if (bookData?.image) {
-      setSelectedImage(`http://localhost:8000/${bookData?.image}`);
+      setSelectedImage(bookData?.image);
     }
   }, [bookData]);
 

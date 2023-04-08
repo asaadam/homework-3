@@ -1,5 +1,6 @@
 import { prisma } from "@/utils/prisma";
 import multer from "multer";
+import jwt from "jsonwebtoken";
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -28,8 +29,14 @@ export default async function handler(req, res) {
           }
           try {
             const { title, author, publisher, year, pages } = req.body;
-            // const token = req.cookies.token;
-            // const user = jwt.verify(token, process.env.JWT_SECRET);
+            const token = req.cookies.token;
+            if (!token) {
+              return res.status(400).json({ message: "Invalid credentials" });
+            }
+            const user = jwt.verify(token, process.env.JWT_SECRET);
+            if (!user) {
+              return res.status(400).json({ message: "Invalid credentials" });
+            }
             const book = await prisma.book.create({
               data: {
                 title,
@@ -43,10 +50,9 @@ export default async function handler(req, res) {
             res.json({ book });
           } catch (err) {
             console.log("err", err);
-            res.status(400).json({ message: "Book already exists" });
+            return res.status(400).json({ message: "Book already exists" });
           }
         });
-        break;
       case "GET":
         try {
           const books = await prisma.book.findMany({
@@ -54,17 +60,17 @@ export default async function handler(req, res) {
               title: "asc",
             },
           });
-          res.json({ books });
+          return res.json({ books });
         } catch (err) {
           console.log(err);
-          res.status(400).json({ message: "Something went wrong" });
+          return res.status(400).json({ message: "Something went wrong" });
         }
       default:
         res.status(400).json({ message: "Invalid request method" });
     }
   } catch (err) {
     console.log(err);
-    res.status(400).json({ message: "Something went wrong" });
+    return res.status(400).json({ message: "Something went wrong" });
   }
 }
 

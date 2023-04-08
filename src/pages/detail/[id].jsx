@@ -20,11 +20,13 @@ import Wrapper from "@/components/Wrapper";
 import { useRouter } from "next/router";
 import Link from "next/link";
 import { deleteBook, getBookDetailById } from "@/modules/fetch";
+import { useAuth } from "@/modules/context/authContext";
 
 export default function BookDetails() {
   const [book, setBook] = useState(null);
   const [isLoading, setLoading] = useState(true);
   const router = useRouter();
+  const { isLoggedIn } = useAuth();
 
   useEffect(() => {
     const fetchBook = async () => {
@@ -36,7 +38,9 @@ export default function BookDetails() {
         console.log(e);
       }
     };
-    fetchBook();
+    if (router.query.id) {
+      fetchBook();
+    }
   }, [router.query.id]);
 
   const handleDeleteBook = async () => {
@@ -55,10 +59,7 @@ export default function BookDetails() {
       ) : (
         <Flex my="6">
           <Box w="300px">
-            <Image
-              src={`${book.image}`}
-              alt={book.title}
-            />
+            <Image src={`${book.image}`} alt={book.title} />
           </Box>
           <Box ml="8">
             <Heading as="h1" size="lg">
@@ -76,6 +77,7 @@ export default function BookDetails() {
           </Box>
         </Flex>
       )}
+      {isLoggedIn && (
         <HStack>
           <Popover>
             <PopoverTrigger>
@@ -93,10 +95,11 @@ export default function BookDetails() {
               </Button>
             </PopoverContent>
           </Popover>
-          <Link href={`/editbook/${router.query.id}`}>
+          <Link href={`/edit/${router.query.id}`}>
             <Button>Edit</Button>
           </Link>
         </HStack>
+      )}
     </Wrapper>
   );
 }
