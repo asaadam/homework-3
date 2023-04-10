@@ -4,7 +4,7 @@ import {
   Flex,
   Heading,
   HStack,
-  Image,
+  
   Popover,
   PopoverArrow,
   PopoverBody,
@@ -21,27 +21,12 @@ import { useRouter } from "next/router";
 import Link from "next/link";
 import { deleteBook, getBookDetailById } from "@/modules/fetch";
 import { useAuth } from "@/modules/context/authContext";
+import { prisma } from "@/utils/prisma";
+import Image from "next/image";
 
-export default function BookDetails() {
-  const [book, setBook] = useState(null);
-  const [isLoading, setLoading] = useState(true);
+export default function BookDetails({ book }) {
   const router = useRouter();
   const { isLoggedIn } = useAuth();
-
-  useEffect(() => {
-    const fetchBook = async () => {
-      try {
-        const response = await getBookDetailById(router.query.id);
-        setBook(response.book);
-        setLoading(false);
-      } catch (e) {
-        console.log(e);
-      }
-    };
-    if (router.query.id) {
-      fetchBook();
-    }
-  }, [router.query.id]);
 
   const handleDeleteBook = async () => {
     try {
@@ -54,29 +39,25 @@ export default function BookDetails() {
 
   return (
     <Wrapper>
-      {isLoading ? (
-        <Skeleton height="300px" my="6" />
-      ) : (
-        <Flex my="6">
-          <Box w="300px">
-            <Image src={`${book.image}`} alt={book.title} />
-          </Box>
-          <Box ml="8">
-            <Heading as="h1" size="lg">
-              {book.title}
-            </Heading>
-            <Text fontSize="xl" fontWeight="semibold" color="gray.500">
-              {book.author}
-            </Text>
-            <Text fontSize="xl" fontWeight="semibold" color="gray.500">
-              {book.publisher}
-            </Text>
-            <Text fontSize="xl" fontWeight="semibold" color="gray.500" mb="4">
-              {book.year} | {book.pages} pages
-            </Text>
-          </Box>
-        </Flex>
-      )}
+      <Flex my="6">
+        <Box w="300px">
+          <Image src={`${book.image}`} alt={book.title} />
+        </Box>
+        <Box ml="8">
+          <Heading as="h1" size="lg">
+            {book.title}
+          </Heading>
+          <Text fontSize="xl" fontWeight="semibold" color="gray.500">
+            {book.author}
+          </Text>
+          <Text fontSize="xl" fontWeight="semibold" color="gray.500">
+            {book.publisher}
+          </Text>
+          <Text fontSize="xl" fontWeight="semibold" color="gray.500" mb="4">
+            {book.year} | {book.pages} pages
+          </Text>
+        </Box>
+      </Flex>
       {isLoggedIn && (
         <HStack>
           <Popover>
@@ -102,4 +83,39 @@ export default function BookDetails() {
       )}
     </Wrapper>
   );
+}
+
+export async function getStaticPaths() {
+  // get all books id
+  const books = await prisma.book.findMany({
+    select: {
+      id: true,
+    },
+  });
+  const paths = books.map((book) => ({
+    params: { id: book.id.toString() },
+  }));
+  return {
+    paths: paths,
+    fallback: 'blocking',
+  };
+}
+
+export async function getStaticProps(context) {
+  try {
+    const book = await prisma.book.findUnique({
+      where: { id: Number(context.params.id) },
+    });
+    return {
+      props: {
+        book,
+      },
+      revalidate:10
+    };
+  } catch (e) {
+    console.log(e);
+    return {
+      props: {},
+    };
+  }
 }
